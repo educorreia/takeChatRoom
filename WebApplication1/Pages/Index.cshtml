@@ -1,0 +1,79 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <div class="box-chat">
+        <div id="msgs"></div>
+    </div>
+
+    <div class="input-message-chat">
+        <textarea class="form-control" id="message" rows="3" style="width: 89%;float: left;"></textarea>
+        <button type="button" id="sendMessage" class="btn btn-primary" style="float: right;height: 85px;width: 10%;">Enviar</button>
+        @*<input type="text" style="max-width:unset;width:100%;max-width:100%" id="MessageField" placeholder="type message and press enter" />*@
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var clientID;
+    $(function () {
+        //var userName = '@Model';
+
+        var protocol = location.protocol === "https:" ? "wss:" : "ws:";
+        var wsUri = protocol + "//" + window.location.host;
+        var socket = new WebSocket(wsUri);
+        socket.onopen = e => {
+            console.log("socket opened", e);
+        };
+
+        socket.onclose = function (e) {
+            console.log("socket closed", e);
+        };
+
+        socket.onmessage = function (e) {
+            console.log(e);
+            var data = e.data;
+            var obj = JSON.parse(data);
+            $('#msgs').append('<span class="msgSpan">' + obj.Text.replace(obj.username, "voce") + '</span>');
+        };
+
+        socket.onerror = function (e) {
+            console.error(e.data);
+        };
+
+        $("#sendMessage").click(function () {
+            sendText(socket);
+        });
+    });
+
+
+        function sendText(socket) {
+            var mensagem = $.trim($("#message").val());
+            var arr = mensagem.split(" ");
+            if (arr[0] == "/help") {
+                $('#msgs').append('<span class="msgSpan">/registe nickname => registrar um usuario</span>');
+                $('#msgs').append('<span class="msgSpan">/channel #nomeCanal => muda de sala de bate papo</span>');
+                $('#msgs').append('<span class="msgSpan">@@usuario mensagem => envia uma mensagem publica para o usuario</span>');
+                $('#msgs').append('<span class="msgSpan">@@usuario private mensagem => envia uma mensagem privada para o usuario</span>');
+                $('#msgs').append('<span class="msgSpan">/exit => sair do bate papo</span>');
+                $("#message").val("");
+                return;
+            }
+            if (arr[0] == "/register")
+                clientID = arr[1].trim();
+
+            var msg = {
+                text: $.trim($("#message").val()),
+                username: clientID,
+                recipient: "",
+                private:false,
+                date: Date.now()
+            };
+            socket.send(JSON.stringify(msg));
+            $("#message").val("");
+    }
+    </script>
+}

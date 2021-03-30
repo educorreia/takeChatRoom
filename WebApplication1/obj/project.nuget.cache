@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "RyGmeudoVAl648/UDjb8WhdHiQFb5uchW9cRoxu0jlkjC8FX04hDBTZS7eToMq99k2i8omw78TA79f3VKwppBA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\david.correia\\source\\repos\\WebApplication1\\WebApplication1\\TakeChat.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\david.correia\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
